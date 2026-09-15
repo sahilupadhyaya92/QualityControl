@@ -79,7 +79,7 @@ class CTPRawDataReaderTask final : public TaskInterface
   int mIndexMBclass = -1; // index for the MB ctp class, which is used as scaling for the ratios
   bool mConsistCheck = 0;
   bool mReadCTPconfigInMonitorData = 0;
-  const o2::ctp::CTPConfiguration* mCTPconfig = nullptr;
+  bool mCTPconfigFound = false; // the config is copied out on the first timeframe that has one
   std::string mMBclassName;
   std::array<uint64_t, o2::ctp::CTP_NCLASSES> mClassErrorsA;
   bool mPerformConsistencyCheck = false;

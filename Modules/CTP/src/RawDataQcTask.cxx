@@ -304,12 +304,15 @@ void CTPRawDataReaderTask::monitorData(o2::framework::ProcessingContext& ctx)
   std::vector<o2::ctp::CTPDigit> outputDigits;
 
   if (mReadCTPconfigInMonitorData) {
-    if (mCTPconfig == nullptr) {
-      mCTPconfig = ctx.inputs().get<o2::ctp::CTPConfiguration*>("ctp-config").get();
-      // mCTPconfig = ctpConfigPtr.get();
-      if (mCTPconfig != nullptr) {
+    if (!mCTPconfigFound) {
+      // Not kept beyond this scope: the object belongs to the framework's CCDB
+      // cache and may be replaced on the next validity period. Everything we
+      // need is copied out below.
+      auto ctpConfig = ctx.inputs().get<o2::ctp::CTPConfiguration*>("ctp-config");
+      if (ctpConfig != nullptr) {
+        mCTPconfigFound = true;
         ILOG(Info, Support) << "CTP config found" << ENDM;
-        std::vector<o2::ctp::CTPClass> ctpcls = mCTPconfig->getCTPClasses();
+        std::vector<o2::ctp::CTPClass> ctpcls = ctpConfig->getCTPClasses();
         for (size_t i = 0; i < ctpcls.size(); i++) {
           classNames[i] = ctpcls[i].name.c_str();
           if (ctpcls[i].name.find(mMBclassName) != std::string::npos) {
@@ -317,7 +320,7 @@ void CTPRawDataReaderTask::monitorData(o2::framework::ProcessingContext& ctx)
             break;
           }
         }
-        mDecoder.setCTPConfig(*mCTPconfig);
+        mDecoder.setCTPConfig(*ctpConfig);
       }
     }
     for (int i = 0; i < nclasses; i++) {
