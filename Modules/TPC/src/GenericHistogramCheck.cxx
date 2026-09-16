@@ -149,8 +149,8 @@ Quality GenericHistogramCheck::check(std::map<std::string, std::shared_ptr<Monit
       mStdevX = h->GetStdDev(1);
     } else if (mHistDimension == 1) {
       ILOG(Error, Support) << "a 1D Histogram was given, but the X-axis is not assigned to be checked. No Check was performed." << ENDM;
-      mMeanX = 999999999; // set it to some number so that the math does not break
-      mStdevX = 999999999;
+      mMeanX = 1e9f; // set it to some number so that the math does not break
+      mStdevX = 1e9f;
     }
     if (mHistDimension == 2) {
       if (mCheckYAxis) {
